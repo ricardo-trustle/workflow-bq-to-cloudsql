@@ -1,8 +1,8 @@
 # Overview
 
 This workflow performs an export of data from BigQuery with the 
-[export statement](https://cloud.google.com/bigquery/docs/reference/standard-sql/other-statements) and store the result 
-in Cloud Storage. The export files are imported, one by one to Cloud SQL. It's the purpose of this 
+[export statement](https://cloud.google.com/bigquery/docs/reference/standard-sql/other-statements) and store the result  in Cloud Storage.
+The export files are imported, one by one to Cloud SQL. It's the purpose of this 
 [Medium article](https://medium.com/google-cloud/replicate-data-from-bigquery-to-cloud-sql-2b23a08c52b1)
 
 # Customization
@@ -25,19 +25,27 @@ dynamically at execution time.
 
 Create a service account with the required permission:
 
-```
+```sh
 # Create the service account
 gcloud iam service-accounts create import-workflow
 
 # Grant the permissions
-gcloud projects add-iam-policy-binding <PROJECT_ID> --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" --role="roles/cloudsql.admin" --condition=None
-gcloud projects add-iam-policy-binding <PROJECT_ID> --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" --role="roles/storage.admin" --condition=None
-gcloud projects add-iam-policy-binding <PROJECT_ID> --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" --role="roles/bigquery.dataViewer" --condition=None
-gcloud projects add-iam-policy-binding <PROJECT_ID> --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" --role="roles/bigquery.jobUser" --condition=None
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+    --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" \
+    --role="roles/cloudsql.admin" --condition=None
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+    --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" \
+    --role="roles/storage.admin" --condition=None
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+    --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" \
+    --role="roles/bigquery.dataViewer" --condition=None
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+    --member="serviceAccount:import-workflow@<PROJECT_ID>.iam.gserviceaccount.com" \
+    --role="roles/bigquery.jobUser" --condition=None
 ```
 
 Deploy to Workflow 
-```
+```sh
 gcloud workflows deploy import --source=import.yaml --service-account=import-workflow@<PROJECT_ID>.iam.gserviceaccount.com
 ```
 
@@ -61,3 +69,11 @@ You can also check your Cloud SQL database to see the import result.
 
 This library is licensed under Apache 2.0. Full license text is available in
 [LICENSE](https://github.com/guillaumeblaquiere/workflow-bq-to-cloudsql/tree/master/LICENSE).
+
+
+## Pass environment variables to the workflow
+
+```
+gcloud workflows deploy WORKFLOW_NAME \
+      --env-vars-file .env.yaml
+```

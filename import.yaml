@@ -2,13 +2,13 @@ main:
   steps:
     - assignStep:
         assign:
-          - bucket: "<YOUR BUCKET>"
-          - projectid: "<YOUR PROJECT ID>"
-          - prefix: "<YOUR FILE PREFIX>"
-          - query: "<YOUR BIGQUERY QUERY>"
-          - instance: "<YOUR CLOUD SQL INSTANCE NAME>"
-          - databaseschema: "<YOUR CLOUD SQL DATABASE NAME>"
-          - importtable: "<YOUR CLOUD SQL TABLE NAME>"
+          - bucket:  ${sys.get_env("BUCKET_NAME")}
+          - projectid: ${sys.get_env("PROJECT_ID")}
+          - prefix: ${sys.get_env("PREFIX")}
+          - query: ${sys.get_env("QUERY")}
+          - instance: ${sys.get_env("INSTANCE")}
+          - databaseschema: ${sys.get_env("DATABASE_SCHEMA")}
+          - importtable: ${sys.get_env("IMPORT_TABLE")}
           - listResult:
               nextPageToken: ""
     - export-query:
