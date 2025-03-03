@@ -93,18 +93,32 @@ import_file:
                   table: ${importtable}
           result: operation
         retry: ${http.default_retry}
-    - chekoperation:
+    - checkoperation:
         switch:
           - condition: ${operation.body.status != "DONE"}
-            next: wait
+            steps:
+              - log_body:
+                  call: sys.log
+                  args:
+                    json: ${operation.body}
+                    severity: "INFO" 
+              - wait:
+                  call: sys.sleep
+                  args:
+                    seconds: 1
+                  next: getoperation
+          - condition: ${operation.body.error != null}
+            steps:
+              - log_body_error:
+                  call: sys.log
+                  args:
+                    json: ${operation.body}
+                    severity: "ERROR"
+              - failed:
+                  raise: ${operation.body.error}
         next: completed
     - completed:
         return: "done"
-    - wait:
-        call: sys.sleep
-        args:
-          seconds: 1
-        next: getoperation
     - getoperation:
         call: http.get
         args:
@@ -112,4 +126,4 @@ import_file:
           auth:
             type: OAuth2
         result: operation
-        next: chekoperation
+        next: checkoperation

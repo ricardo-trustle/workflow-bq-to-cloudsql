@@ -4,7 +4,7 @@ create DATABASE trustle;
 
 create TABLE pokemons (
     Name VARCHAR(255),
-    Pokedex_Number INTEGER,
+    Pokedex_Number INTEGER PRIMARY KEY,
     Type1 VARCHAR(255),
     Type2 VARCHAR(255),
     Classification VARCHAR(255),
